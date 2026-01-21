@@ -35,7 +35,7 @@ You’ll learn how to:
 
 * Secure your workloads with valid TLS certificates
 * Register and configure custom domains in Route 53
-* Route traffic to different apps based on subdomains (like `iphone.cwvj.click`)
+* Route traffic to different apps based on subdomains (like `iphone.abc.click`)
 
 This lesson closes the loop on everything you need to build a **production-ready ingress gateway** using Kubernetes-native manifests and AWS-native services.
 
@@ -88,10 +88,10 @@ In this demo, we will elevate our basic ingress setup into a more **production-r
 
 ## **Step 1: Register Domain and Request TLS Certificate**
 
-1. Go to the **Route 53 Console** → **Domains** → Register your domain (e.g., `cwvj.click`).
+1. Go to the **Route 53 Console** → **Domains** → Register your domain (e.g., `abc.click`).
 2. Once registered, Route 53 will automatically create a hosted zone with **4 name servers**.
 3. Now navigate to **AWS Certificate Manager (ACM)** → **Request a certificate**.
-4. Choose **"Request a public certificate"**, and enter your domain name (`cwvj.click`).
+4. Choose **"Request a public certificate"**, and enter your domain name (`abc.click`).
 5. Choose **DNS validation**, and when prompted, allow ACM to **create the validation records** in Route 53.
 6. ACM will verify the DNS ownership via CNAME records, and issue the certificate once the validation succeeds.
 
@@ -115,7 +115,7 @@ metadata:
   annotations:
     # Basic ALB configuration
     alb.ingress.kubernetes.io/scheme: internet-facing
-    alb.ingress.kubernetes.io/load-balancer-name: cwvj-ingress-demo2
+    alb.ingress.kubernetes.io/load-balancer-name: abc-ingress-demo2
     alb.ingress.kubernetes.io/target-type: ip
 
     # ALB Listener configuration (enable both HTTP and HTTPS)
@@ -176,18 +176,18 @@ Once the ALB is provisioned and you have the **DNS name** from `kubectl get ingr
 
 **Instructions:**
 
-1. Navigate to **Route 53 → Hosted Zones → cwvj.click**.
+1. Navigate to **Route 53 → Hosted Zones → abc.click**.
 2. Click **Create Record**.
-3. Since we are setting this up for the **apex domain** (`cwvj.click`), leave the **Record name** blank.
+3. Since we are setting this up for the **apex domain** (`abc.click`), leave the **Record name** blank.
 4. Select **Alias**.
 5. Under “Route traffic to”, choose:
 
    * **Alias to: Application and Classic Load Balancer**
    * **Region: us-east-2** (or your cluster’s region)
-   * **Choose Load Balancer:** Select the ALB provisioned by your Ingress (it should contain `cwvj-ingress-demo2` in the name).
+   * **Choose Load Balancer:** Select the ALB provisioned by your Ingress (it should contain `abc-ingress-demo2` in the name).
 6. Click **Create records**.
 
-This will ensure that `https://cwvj.click` (and its subpaths) resolve to your newly provisioned AWS ALB.
+This will ensure that `https://abc.click` (and its subpaths) resolve to your newly provisioned AWS ALB.
 
 ---
 
@@ -197,15 +197,15 @@ This will ensure that `https://cwvj.click` (and its subpaths) resolve to your ne
 Try accessing the following URLs:
 
 ```bash
-https://cwvj.click/
+https://abc.click/
 → Desktop Users
 → Welcome to Cloud With AB Chatterjee
 
-https://cwvj.click/iphone/
+https://abc.click/iphone/
 → iPhone Users
 → Welcome to Cloud With AB Chatterjee
 
-https://cwvj.click/android/
+https://abc.click/android/
 → Android Users
 → Welcome to Cloud With AB Chatterjee
 ```
@@ -223,12 +223,12 @@ You can inspect rules under:
 
 **Note on Wildcard Certificates**
 
-If your certificate only covers `*.cwvj.click`, then the apex domain `cwvj.click` **will not be trusted** by browsers. To avoid browser warnings:
+If your certificate only covers `*.abc.click`, then the apex domain `abc.click` **will not be trusted** by browsers. To avoid browser warnings:
 
 * **Reissue the cert** with both:
 
-  * `*.cwvj.click`
-  * `cwvj.click`
+  * `*.abc.click`
+  * `abc.click`
 
 This ensures full coverage.
 
@@ -250,11 +250,11 @@ This will delete the Ingress resource with TLS and any deployments or services d
 
 #### **2. Delete the ACM Certificate**
 
-Navigate to **AWS Certificate Manager (ACM)** in the AWS Console and delete the **public certificate** you requested for your domain (`cwvj.click` or similar). This prevents unused certificates from lingering in your account.
+Navigate to **AWS Certificate Manager (ACM)** in the AWS Console and delete the **public certificate** you requested for your domain (`abc.click` or similar). This prevents unused certificates from lingering in your account.
 
 #### **3. Delete the Route 53 Alias Record**
 
-Go to **Route 53 → Hosted Zones → cwvj.click** and delete the **alias A record** that was created to point your apex domain (`cwvj.click`) to the ALB.
+Go to **Route 53 → Hosted Zones → abc.click** and delete the **alias A record** that was created to point your apex domain (`abc.click`) to the ALB.
 
 > ⚠️ Do **not** delete the hosted zone or domain registration if you plan to use them in **Demo 3** for host-based routing.
 
@@ -264,19 +264,19 @@ Once the Ingress is deleted, the **AWS Load Balancer Controller** will automatic
 
 #### **5. Retain the Cluster**
 
-The same EKS cluster (`cwvj-ingress-demo`) will be reused in **Demo 3**, where we’ll configure **name-based routing** with subdomains like `iphone.cwvj.click` and `android.cwvj.click`.
+The same EKS cluster (`abc-ingress-demo`) will be reused in **Demo 3**, where we’ll configure **name-based routing** with subdomains like `iphone.abc.click` and `android.abc.click`.
 
 If you do not plan to proceed right away and wish to reclaim all resources, you can delete the cluster later using:
 
 ```bash
-eksctl delete cluster --name cwvj-ingress-demo
+eksctl delete cluster --name abc-ingress-demo
 ```
 
 ---
 
 ## **Demo 3: Name-Based Routing Using ALB Ingress on EKS**
 
-In this demo, we will extend our TLS-secured Ingress setup from Demo 2 and implement **host-based (name-based) routing**. This allows requests to different subdomains (e.g., `iphone.cwvj.click`, `android.cwvj.click`, `cwvj.click`) to be routed to separate services inside the Kubernetes cluster. This is a common pattern in production-grade ingress configurations where applications are hosted under different subdomains.
+In this demo, we will extend our TLS-secured Ingress setup from Demo 2 and implement **host-based (name-based) routing**. This allows requests to different subdomains (e.g., `iphone.abc.click`, `android.abc.click`, `abc.click`) to be routed to separate services inside the Kubernetes cluster. This is a common pattern in production-grade ingress configurations where applications are hosted under different subdomains.
 
 ![Alt text](/images/51b.png)
 
@@ -288,8 +288,8 @@ To enable HTTPS for multiple subdomains, we need valid TLS certificates:
 
 1. Go to **AWS Certificate Manager (ACM)** → Request 2 public certificates:
 
-   * One for the **apex domain**: `cwvj.click`
-   * One for **wildcard subdomains**: `*.cwvj.click`
+   * One for the **apex domain**: `abc.click`
+   * One for **wildcard subdomains**: `*.abc.click`
 
 2. Choose **DNS validation** and let ACM **automatically create validation records** in Route 53.
 
@@ -375,7 +375,7 @@ metadata:
   annotations:
     # ALB Scheme
     alb.ingress.kubernetes.io/scheme: internet-facing
-    alb.ingress.kubernetes.io/load-balancer-name: cwvj-ingress-demo3
+    alb.ingress.kubernetes.io/load-balancer-name: abc-ingress-demo3
 
     # Target Mode
     alb.ingress.kubernetes.io/target-type: ip
@@ -396,7 +396,7 @@ metadata:
 spec:
   ingressClassName: alb
   rules:
-    - host: iphone.cwvj.click
+    - host: iphone.abc.click
       http:
         paths:
           - path: /
@@ -406,7 +406,7 @@ spec:
                 name: iphone-svc
                 port:
                   number: 80
-    - host: android.cwvj.click
+    - host: android.abc.click
       http:
         paths:
           - path: /
@@ -416,7 +416,7 @@ spec:
                 name: android-svc
                 port:
                   number: 80
-    - host: cwvj.click
+    - host: abc.click
       http:
         paths:
           - path: /
@@ -430,7 +430,7 @@ spec:
 
 ### **Explanation**
 
-* We add both ACM certificates: one for apex (`cwvj.click`) and one for wildcard (`*.cwvj.click`) domains.
+* We add both ACM certificates: one for apex (`abc.click`) and one for wildcard (`*.abc.click`) domains.
 * Each rule uses the `host` field to match subdomain requests.
 * The path `/` under each host now maps to the corresponding service, thanks to our updated `index.html`.
 
@@ -446,9 +446,9 @@ kubectl apply -f .
 
 To resolve DNS:
 
-* Create alias record: `iphone.cwvj.click` → points to ALB
-* Create alias record: `android.cwvj.click` → points to ALB
-* Create alias record: `cwvj.click` → points to ALB
+* Create alias record: `iphone.abc.click` → points to ALB
+* Create alias record: `android.abc.click` → points to ALB
+* Create alias record: `abc.click` → points to ALB
 
 All three subdomains should now be resolved via Route 53 and routed correctly through ALB.
 
@@ -460,9 +460,9 @@ All three subdomains should now be resolved via Route 53 and routed correctly th
 
 Verify each of the below:
 
-* `https://iphone.cwvj.click` → should return iPhone page
-* `https://android.cwvj.click` → should return Android page
-* `https://cwvj.click` → should return Desktop (catch-all) page
+* `https://iphone.abc.click` → should return iPhone page
+* `https://android.abc.click` → should return Android page
+* `https://abc.click` → should return Desktop (catch-all) page
 
 You can inspect listener rules in ALB to confirm host and path conditions are matching correctly.
 
@@ -482,14 +482,14 @@ To clean up:
 
 3. In **Route 53**, remove alias records for:
 
-   * `iphone.cwvj.click`
-   * `android.cwvj.click`
-   * `cwvj.click`
+   * `iphone.abc.click`
+   * `android.abc.click`
+   * `abc.click`
 
 4. If you’re done with the cluster:
 
    ```bash
-   eksctl delete cluster --name cwvj-ingress-demo --region us-east-2
+   eksctl delete cluster --name abc-ingress-demo --region us-east-2
    ```
 
 ---

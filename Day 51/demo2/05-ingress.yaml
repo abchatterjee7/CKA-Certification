@@ -6,7 +6,7 @@ metadata:
   annotations:
     # AWS ALB Ingress Controller Settings
     alb.ingress.kubernetes.io/scheme: internet-facing
-    alb.ingress.kubernetes.io/load-balancer-name: cwvj-ingress-demo2
+    alb.ingress.kubernetes.io/load-balancer-name: abc-ingress-demo2
 
     # Target Type and Listener Port
     alb.ingress.kubernetes.io/target-type: ip

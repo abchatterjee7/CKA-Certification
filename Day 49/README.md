@@ -164,7 +164,7 @@ Ingress is a cornerstone of Kubernetes networking in production. In this **three
 
 * **Part 3 (Day 50)**:
   **Demo 2**: Enable HTTPS with **TLS Termination using ACM** and **Custom Domain via Route 53**
-  **Demo 3**: **Name-Based Routing** for `iphone.cwvj.click`, `android.cwvj.click` using the **same ALB**
+  **Demo 3**: **Name-Based Routing** for `iphone.abc.click`, `android.abc.click` using the **same ALB**
 
 Let’s now begin **Demo 1 on Amazon EKS in Day 50** and see Ingress in action.
 

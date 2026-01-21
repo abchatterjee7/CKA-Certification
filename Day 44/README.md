@@ -665,11 +665,11 @@ Use the following configuration to create your cluster:
 apiVersion: eksctl.io/v1alpha5
 kind: ClusterConfig
 metadata:
-  name: cwvj-eks-cluster
+  name: abc-eks-cluster
   region: us-east-2
   tags:
     owner: AB-Chatterjee
-    bu: cwvj
+    bu: abc
     environment: prod
     project: statefulsets-training
 availabilityZones:
@@ -679,7 +679,7 @@ availabilityZones:
 iam:
   withOIDC: true
 managedNodeGroups:
-  - name: cwvj-eks-priv-ng
+  - name: abc-eks-priv-ng
     instanceType: t3.small
     minSize: 4
     maxSize: 5

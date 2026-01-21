@@ -2,11 +2,11 @@ apiVersion: eksctl.io/v1alpha5
 kind: ClusterConfig
 
 metadata:
-  name: cwvj-ingress-demo
+  name: abc-ingress-demo
   region: us-east-2
   tags:
     owner: AB-Chatterjee
-    bu: cwvj
+    bu: abc
     project: ingress-demo
 
 availabilityZones:
@@ -17,7 +17,7 @@ iam:
   withOIDC: true
 
 managedNodeGroups:
-  - name: cwvj-eks-priv-ng
+  - name: abc-eks-priv-ng
     instanceType: t3.small
     minSize: 4
     maxSize: 4

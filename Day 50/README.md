@@ -129,11 +129,11 @@ apiVersion: eksctl.io/v1alpha5       # Defines the API version used by eksctl fo
 kind: ClusterConfig                  # Declares the type of resource (an EKS cluster configuration)
 
 metadata:
-  name: cwvj-ingress-demo            # Name of the EKS cluster to be created
+  name: abc-ingress-demo            # Name of the EKS cluster to be created
   region: us-east-2                 # AWS region where the cluster will be deployed (Ohio)
   tags:                             # Custom tags for AWS resources created as part of this cluster
     owner: AB-Chatterjee              # Tag indicating the owner of the cluster
-    bu: cwvj                        # Tag indicating business unit or project group
+    bu: abc                        # Tag indicating business unit or project group
     project: ingress-demo           # Tag for grouping resources under the ingress demo project
 
 availabilityZones:
@@ -144,7 +144,7 @@ iam:
   withOIDC: true                    # Enables IAM OIDC provider, required for IAM roles for service accounts (IRSA)
 
 managedNodeGroups:
-  - name: cwvj-eks-priv-ng          # Name of the managed node group
+  - name: abc-eks-priv-ng          # Name of the managed node group
     instanceType: t3.small          # EC2 instance type for worker nodes
     minSize: 4                      # Minimum number of nodes in the group
     maxSize: 4                      # Maximum number of nodes (fixed at 4 here; no autoscaling)
@@ -221,7 +221,7 @@ We now create a Kubernetes `ServiceAccount` that is linked to the IAM policy cre
 
 ```bash
 eksctl create iamserviceaccount \
-  --cluster=cwvj-ingress-demo \
+  --cluster=abc-ingress-demo \
   --namespace=kube-system \
   --name=aws-load-balancer-controller \
   --attach-policy-arn=arn:aws:iam::261358761470:policy/AWSLoadBalancerControllerIAMPolicy \
@@ -251,7 +251,7 @@ metadata:
   name: aws-load-balancer-controller
   namespace: kube-system
   annotations:
-    eks.amazonaws.com/role-arn: arn:aws:iam::261358761470:role/eksctl-cwvj-ingress-demo-addon-iamserviceacco-Role1-Llblca1iSsNh
+    eks.amazonaws.com/role-arn: arn:aws:iam::261358761470:role/eksctl-abc-ingress-demo-addon-iamserviceacco-Role1-Llblca1iSsNh
 ```
 
 This annotation allows the controller pod to **assume the IAM role** and make API calls securely from within the cluster.
@@ -274,7 +274,7 @@ Install the controller:
 ```bash
 helm install aws-load-balancer-controller eks/aws-load-balancer-controller \
   -n kube-system \
-  --set clusterName=cwvj-ingress-demo \
+  --set clusterName=abc-ingress-demo \
   --set serviceAccount.create=false \
   --set serviceAccount.name=aws-load-balancer-controller \
   --version 1.13.0
@@ -624,7 +624,7 @@ metadata:
     alb.ingress.kubernetes.io/scheme: internet-facing
     # Makes the ALB internet-facing (publicly accessible); other option is 'internal' for private use
 
-    alb.ingress.kubernetes.io/load-balancer-name: cwvj-ingress-demo1
+    alb.ingress.kubernetes.io/load-balancer-name: abc-ingress-demo1
     # Assigns a custom name to the ALB; helpful for identification in the AWS Console
 
     alb.ingress.kubernetes.io/target-type: ip
@@ -802,7 +802,7 @@ Sample output:
 
 ```
 NAME            CLASS   HOSTS   ADDRESS                                                    PORTS   AGE
-ingress-demo1   alb     *       cwvj-ingress-demo1-351634829.us-east-2.elb.amazonaws.com   80      33s
+ingress-demo1   alb     *       abc-ingress-demo1-351634829.us-east-2.elb.amazonaws.com   80      33s
 ```
 
 > **Allow up to  ~3 minutes** for the external ALB to be provisioned after applying the Ingress manifest. You can monitor its creation in the AWS Console under EC2 → Load Balancers.
@@ -823,7 +823,7 @@ Once the ALB is fully provisioned and all services report healthy targets, test 
 #### **iPhone Users Route**
 
 ```
-http://cwvj-ingress-demo1-351634829.us-east-2.elb.amazonaws.com/iphone
+http://abc-ingress-demo1-351634829.us-east-2.elb.amazonaws.com/iphone
 ```
 
 Expected Output:
@@ -840,7 +840,7 @@ This is served by the `iphone-deploy` pods, with static HTML under `/iphone/inde
 #### **Android Users Route**
 
 ```
-http://cwvj-ingress-demo1-351634829.us-east-2.elb.amazonaws.com/android
+http://abc-ingress-demo1-351634829.us-east-2.elb.amazonaws.com/android
 ```
 
 Expected Output:
@@ -857,7 +857,7 @@ This is served by the `android-deploy` pods from `/android/index.html`.
 #### **Desktop Users Route (Default/Catch-All)**
 
 ```
-http://cwvj-ingress-demo1-351634829.us-east-2.elb.amazonaws.com/
+http://abc-ingress-demo1-351634829.us-east-2.elb.amazonaws.com/
 ```
 
 Expected Output:
@@ -895,7 +895,7 @@ To cross-check that your Ingress configuration has been reflected properly:
 Navigate to **EC2 → Load Balancers** and locate the ALB with the name defined in:
 
 ```yaml
-alb.ingress.kubernetes.io/load-balancer-name: cwvj-ingress-demo1
+alb.ingress.kubernetes.io/load-balancer-name: abc-ingress-demo1
 ```
 
 Then verify:
@@ -941,7 +941,7 @@ This will:
 > **Note**: If you're done with all demos and want to completely clean up your EKS environment, you can delete the entire cluster using:
 
 ```bash
-eksctl delete cluster --name cwvj-ingress-demo
+eksctl delete cluster --name abc-ingress-demo
 ```
 
 > However, since we will build upon the same cluster in **Demo 2**, do **not delete the cluster** yet.

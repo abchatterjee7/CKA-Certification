@@ -239,8 +239,8 @@ This modular structure allows large domains to be delegated, distributed, and ma
   ```dns
   kubernetes.io.   NS   ns1.digitalocean.com.
   kubernetes.io.   NS   ns2.digitalocean.com.
-  cwvj.io.         NS   ns1.godaddy.com.
-  cwvj.io.         NS   ns2.godaddy.com.
+  abc.io.         NS   ns1.godaddy.com.
+  abc.io.         NS   ns2.godaddy.com.
   ```
 
   * In this case, `kubernetes.io` is delegated to **DigitalOcean's** nameservers.
@@ -520,7 +520,7 @@ These TLD nameservers don't store the **actual DNS records (like A or MX)**. Ins
 
 ## How Domain Registration Works (Step-by-Step Breakdown)
 
-This section explains the behind-the-scenes process of registering a new domain — in this case, **`cwvj.io`**, as done by Aadi. The diagram outlines how control flows from the domain owner to the global DNS hierarchy, involving the **registrar**, **registry**, and **root servers**.
+This section explains the behind-the-scenes process of registering a new domain — in this case, **`abc.io`**, as done by Aadi. The diagram outlines how control flows from the domain owner to the global DNS hierarchy, involving the **registrar**, **registry**, and **root servers**.
 
 ![Alt text](/images/48ac.png)
 
@@ -528,10 +528,10 @@ This section explains the behind-the-scenes process of registering a new domain 
 
 ### Step 1: Domain Owner Initiates Registration
 
-Aadi decides to register the domain `cwvj.io`.
+Aadi decides to register the domain `abc.io`.
 
 * He visits a **domain registrar** like **GoDaddy.com**, which provides a UI to search and purchase domain names.
-* Aadi completes the purchase, becoming the legal owner of `cwvj.io`.
+* Aadi completes the purchase, becoming the legal owner of `abc.io`.
 
 ---
 
@@ -539,7 +539,7 @@ Aadi decides to register the domain `cwvj.io`.
 
 The **domain registrar** (e.g., GoDaddy) performs the following actions:
 
-* Officially **registers `cwvj.io`** on Aadi's behalf.
+* Officially **registers `abc.io`** on Aadi's behalf.
 * Assigns a set of **default authoritative nameservers** to manage DNS for the domain.
 
   * Example:
@@ -556,22 +556,22 @@ The **domain registrar** (e.g., GoDaddy) performs the following actions:
 
 The **domain registry** (for `.io`, it's **NIC.IO**) receives the NS data and updates the zone file for `.io`:
 
-* It adds an entry for `cwvj.io`:
+* It adds an entry for `abc.io`:
 
   ```dns
-  cwvj.io.  NS  ns1.godaddy.com.
-  cwvj.io.  NS  ns2.godaddy.com.
+  abc.io.  NS  ns1.godaddy.com.
+  abc.io.  NS  ns2.godaddy.com.
   ```
 * This **delegates authority** to GoDaddy’s nameservers.
-* Now, any DNS resolver that queries for `cwvj.io` will be told to ask **ns1/ns2.godaddy.com** for answers.
+* Now, any DNS resolver that queries for `abc.io` will be told to ask **ns1/ns2.godaddy.com** for answers.
 
 ---
 
 ### Step 4: Root Servers Enable TLD Routing (We don't do anything here, this is aready in place)
 
-At the top of the DNS hierarchy lies the **Root Zone** (denoted by a dot `.`). Root servers don’t know about individual domains like `cwvj.io`, but they **do know** where to find the authoritative nameservers for each **Top-Level Domain (TLD)** such as `.io`.
+At the top of the DNS hierarchy lies the **Root Zone** (denoted by a dot `.`). Root servers don’t know about individual domains like `abc.io`, but they **do know** where to find the authoritative nameservers for each **Top-Level Domain (TLD)** such as `.io`.
 
-* When a DNS resolver starts resolving `cwvj.io`, it first contacts a **root server**.
+* When a DNS resolver starts resolving `abc.io`, it first contacts a **root server**.
 * The **root server responds with a referral** to the **`.io` TLD nameservers** (e.g., `a0.nic.io`, `b0.nic.io`).
 * This allows the resolver to continue the query down the chain, eventually reaching `ns1.godaddy.com` to get the final answer.
 
@@ -581,7 +581,7 @@ At the top of the DNS hierarchy lies the **Root Zone** (denoted by a dot `.`). R
 
 | Role             | Responsibility                                                             |
 | ---------------- | -------------------------------------------------------------------------- |
-| **Domain Owner** | Initiates domain registration (e.g., Aadi registering `cwvj.io`).         |
+| **Domain Owner** | Initiates domain registration (e.g., Aadi registering `abc.io`).         |
 | **Registrar**    | Facilitates registration, assigns nameservers, and sends info to registry. |
 | **Registry**     | Maintains the `.io` zone, adds NS records, and delegates DNS authority.    |
 | **Root Servers** | Know where to find TLD servers like `.io`, `.com`, and `.org`.             |
@@ -593,7 +593,7 @@ At the top of the DNS hierarchy lies the **Root Zone** (denoted by a dot `.`). R
 After these steps:
 
 * The domain is now officially part of the DNS hierarchy.
-* When someone tries to access `https://cwvj.io`, DNS resolvers follow this path:
+* When someone tries to access `https://abc.io`, DNS resolvers follow this path:
 
   1. Ask Root → redirected to `.io` TLD servers.
   2. Ask `.io` TLD → redirected to GoDaddy’s nameservers.
@@ -605,16 +605,16 @@ This **multi-layered delegation** is what makes DNS scalable and globally distri
 
 ## How DNS Resolves a Domain Name
 
-### *(Shwetangi opens `https://cwvj.io` in her browser)*
+### *(Shwetangi opens `https://abc.io` in her browser)*
 
 ![Alt text](/images/48ad.png)
 
 #### Step 1: User Initiates Request  
-**Action:** Shwetangi attempts to access `cwvj.io` using a browser or application.  
+**Action:** Shwetangi attempts to access `abc.io` using a browser or application.  
 **Explanation:** This initiates the DNS resolution process to convert the domain name into an IP address that the system can use to locate and communicate with the destination server.
 
 #### Step 2: Computer Checks Local DNS Cache  
-**Action:** The operating system inspects its local DNS cache for a valid record of `cwvj.io`.  
+**Action:** The operating system inspects its local DNS cache for a valid record of `abc.io`.  
 **Explanation:** If a non-expired record is found (based on TTL), the system bypasses external DNS queries and uses the cached IP address directly.
 
 #### Step 3: Computer Sends Query to DNS Resolver  
@@ -622,7 +622,7 @@ This **multi-layered delegation** is what makes DNS scalable and globally distri
 **Explanation:** The resolver acts as an intermediary that performs recursive lookups on behalf of the client.
 
 #### Step 4: Resolver Checks Its Own Cache  
-**Action:** The DNS resolver checks its internal cache for a recent record of `cwvj.io`.  
+**Action:** The DNS resolver checks its internal cache for a recent record of `abc.io`.  
 **Explanation:** If a valid cached response exists, the resolver returns it immediately. Otherwise, it begins recursive resolution by querying upstream nameservers.
 
 #### Step 5: Resolver Queries the Root Nameserver  
@@ -634,19 +634,19 @@ This **multi-layered delegation** is what makes DNS scalable and globally distri
 **Explanation:** This referral enables the resolver to continue its query by contacting the appropriate TLD-level servers.
 
 #### Step 7: Resolver Queries the `.io` TLD Nameserver  
-**Action:** The resolver asks the `.io` nameserver which authoritative nameservers are responsible for `cwvj.io`.  
+**Action:** The resolver asks the `.io` nameserver which authoritative nameservers are responsible for `abc.io`.  
 **Explanation:** TLD nameservers manage delegation for domains under their zone and respond with authoritative server details for the requested domain.
 
 #### Step 8: TLD Nameserver Responds with Authoritative Nameservers  
-**Action:** The `.io` nameserver returns a referral to the authoritative nameservers for `cwvj.io` (e.g., `ns1.godaddy.com`, `ns2.godaddy.com`).  
-**Explanation:** These authoritative nameservers hold the actual DNS records for `cwvj.io`, including its A, AAAA, and other resource records.
+**Action:** The `.io` nameserver returns a referral to the authoritative nameservers for `abc.io` (e.g., `ns1.godaddy.com`, `ns2.godaddy.com`).  
+**Explanation:** These authoritative nameservers hold the actual DNS records for `abc.io`, including its A, AAAA, and other resource records.
 
 #### Step 9: Resolver Queries the Authoritative Nameserver  
-**Action:** The resolver sends a query to the authoritative nameserver asking for the IP address of `cwvj.io`.  
+**Action:** The resolver sends a query to the authoritative nameserver asking for the IP address of `abc.io`.  
 **Explanation:** This is the final step in the recursive lookup chain. The authoritative server provides the definitive answer for the domain.
 
 #### Step 10: Authoritative Nameserver Responds with A Record  
-**Action:** The authoritative nameserver replies with the A record for `cwvj.io`, such as `15.202.3.55`.  
+**Action:** The authoritative nameserver replies with the A record for `abc.io`, such as `15.202.3.55`.  
 **Explanation:** The A record maps the domain name to its IPv4 address, enabling the client to initiate a network connection.
 
 #### Step 11: Resolver Caches the Result  
@@ -655,7 +655,7 @@ This **multi-layered delegation** is what makes DNS scalable and globally distri
 
 #### Step 12: Computer Receives IP Address  
 **Action:** The resolver returns the IP address to the computer, which then passes it to Shwetangi’s browser or application.  
-**Explanation:** With the IP address resolved, the browser can initiate a TCP/IP connection to the server hosting `cwvj.io`, completing the DNS resolution process.
+**Explanation:** With the IP address resolved, the browser can initiate a TCP/IP connection to the server hosting `abc.io`, completing the DNS resolution process.
 
 ---
 

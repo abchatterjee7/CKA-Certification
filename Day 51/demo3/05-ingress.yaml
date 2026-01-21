@@ -6,7 +6,7 @@ metadata:
   annotations:
     # AWS ALB Ingress Controller Settings
     alb.ingress.kubernetes.io/scheme: internet-facing
-    alb.ingress.kubernetes.io/load-balancer-name: cwvj-ingress-demo3
+    alb.ingress.kubernetes.io/load-balancer-name: abc-ingress-demo3
 
     # Target Type and Listener Port
     alb.ingress.kubernetes.io/target-type: ip
@@ -22,12 +22,12 @@ metadata:
     alb.ingress.kubernetes.io/success-codes: '200'
 
     ## SSL Settings
-    alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:us-east-2:261358761470:certificate/7c872ed1-a1aa-413a-978f-2ed7d0bdb6a9 # We have supplied 2 certs; 1 for cwvj.click and another for *.cwvj.click
+    alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:us-east-2:261358761470:certificate/7c872ed1-a1aa-413a-978f-2ed7d0bdb6a9 # We have supplied 2 certs; 1 for abc.click and another for *.abc.click
     alb.ingress.kubernetes.io/ssl-redirect: '443'
 spec:
   ingressClassName: alb
   rules:
-    - host: iphone.cwvj.click
+    - host: iphone.abc.click
       http:
         paths:
           - path: /
@@ -37,7 +37,7 @@ spec:
                 name: iphone-svc
                 port:
                   number: 80
-    - host: android.cwvj.click
+    - host: android.abc.click
       http:
         paths:
           - path: /
@@ -47,7 +47,7 @@ spec:
                 name: android-svc
                 port:
                   number: 80
-    - host: cwvj.click
+    - host: abc.click
       http:
         paths:
           - path: /
